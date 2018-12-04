@@ -194,9 +194,9 @@ function walkObject(obj, visit, parent = null) {
 
     if (interfaceParams.length > 0) {
       const tsInterface = `
-    export interface ${interfaceName} { 
-        ${interfaceParams.join("\n        ")}
-    }`;
+        export interface ${interfaceName} { 
+            ${interfaceParams.join("\n        ")}
+        }`;
       TsInterfaces.push(tsInterface);
     }
 
@@ -207,18 +207,22 @@ function walkObject(obj, visit, parent = null) {
       .reduce((p, n) => [n[0] === ":" ? n.substr(1) : null, ...p], [])
       .filter(Boolean);
 
+    const MediaType = "application/json";
     let parameters = [];
     let names = [];
-    let bodySchema = {
-      name: "params",
+    let reqBodyRequired = [];
+    let reqBodyProperties = {};
+    let requestBody = {
       description: "request body params",
-      in: "body",
-      schema: {
-        type: "object",
-        required: [],
-        properties: []
-      }
+      content: {
+        [MediaType]: {
+          schema: {
+            '$ref': `#/components/schemas/${interfaceName}RequestBody`
+          }
+        }
+      },
     };
+    const reqSchema = {};
     for (const param of params) {
       if (names.includes(param.memberName)) continue; //skip if already present due to human error
       names.push(param.memberName);
@@ -235,30 +239,31 @@ function walkObject(obj, visit, parent = null) {
       if (pathParams.includes(param.memberName)) p.in = "path";
       else if (methodType === "GET") p.in = "query";
       else {
-        bodySchema.schema.properties = {
-          ...bodySchema.schema.properties,
+        reqBodyProperties = { ...reqBodyProperties,
           [param.memberName]: {
             type: param.type.name
           }
-        };
+        }
         if (param.type.type !== "OptionalType") {
-          bodySchema.schema.required.push(param.memberName);
+          reqBodyRequired.push(param.memberName)
         }
         continue;
-      }
+      };
       parameters.push(p);
     }
-    if (Object.keys(bodySchema.schema.properties).length > 0) {
-      if (bodySchema.schema.required.length === 0) {
-        delete bodySchema.schema.required;
-      } else {
-        bodySchema.required = true;
+    if (Object.keys(reqBodyProperties).length > 0) {
+      reqSchema[`${interfaceName}RequestBody`] = {
+        type: "object"
+      };
+      if (reqBodyRequired.length !== 0) {
+        requestBody.required = true;
+        reqSchema[`${interfaceName}RequestBody`].required = reqBodyRequired;
       }
-      parameters.push(bodySchema);
+      reqSchema[`${interfaceName}RequestBody`].properties = reqBodyProperties
     }
 
     const operationId = interfaceName; //???
-    let parmaRoute = route.replace(/:([\w]+)/g, "{$1}");
+    let paramRoute = route.replace(/:([\w]+)/g, "{$1}");
     let summary = description.split(".")[0].replace(/\n/g, " ");
 
     const AdHocSchemas = {
@@ -316,10 +321,10 @@ function walkObject(obj, visit, parent = null) {
     };
 
     let schema = respSchema ? {
-        [interfaceName]: _.omit(toOpenApi(respSchema), ["title"])
+        [`${interfaceName}Response`]: _.omit(toOpenApi(respSchema), ["title"])
       } :
       AdHocSchemas[interfaceName] ? {
-        [interfaceName]: AdHocSchemas[interfaceName]
+        [`${interfaceName}Response`]: AdHocSchemas[interfaceName]
       } :
       null;
 
@@ -332,12 +337,13 @@ function walkObject(obj, visit, parent = null) {
 
     if (schema) {
       _.set(response[code], "content.application/json.schema", {
-        $ref: `#/components/schemas/${interfaceName}`
+        $ref: `#/components/schemas/${interfaceName}Response`
       });
     }
 
+
     const paths = {
-      [parmaRoute]: {
+      [paramRoute]: {
         [methodType.toLowerCase()]: {
           summary,
           operationId,
@@ -359,11 +365,15 @@ function walkObject(obj, visit, parent = null) {
         }
       }
     };
+    if (Object.keys(reqBodyProperties).length > 0) {
+      paths[paramRoute][methodType.toLowerCase()].requestBody = requestBody;
+    }
 
     Paths = { ...Paths,
       ...paths
     };
     Schemas = { ...Schemas,
+      ...reqSchema,
       ...schema
     };
   }

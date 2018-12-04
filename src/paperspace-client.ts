@@ -1,11 +1,14 @@
-import PaperspaceApi from '../build/dist/lib';
+import PaperspaceApi from "../build/src/PaperspaceApi";
 
 class PaperspaceClient extends PaperspaceApi {
   setApiKey(apiKey: string) {
-    this.setRequestHeadersHandler((headers)=>({ ...headers, 'x-api-key': apiKey }))
+    this.setRequestHeadersHandler(headers => ({
+      ...headers,
+      "x-api-key": apiKey
+    }));
   }
-  async login({ email, password }:{ email: string, password: string }){
-    const response = await this.LoginUser({ email, password });
+  async login({ email, password }: { email: string; password: string }) {
+    const response = await this.LoginUser({ body: { email, password } });
     this.setApiKey(response.body.key);
-}
+  }
 }
