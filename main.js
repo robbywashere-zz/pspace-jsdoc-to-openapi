@@ -139,8 +139,7 @@ function walkObject(obj,visit, parent = null){
       }
     }
 
-    //TODO: object is sometimes called 'filter' instead of params
-    const params = result.tags.filter(({ name })=> name && name.substr(0,7) === "params.").map(p=>{
+    const params = result.tags.filter(({ name })=> name && /\w+\.\w+/.test(name)).map(p=>{
       if (p) {
         if (_.get(p,'type.type') === "OptionalType") {
           p.optional = true;
@@ -153,6 +152,8 @@ function walkObject(obj,visit, parent = null){
       }
       return p;
     })
+
+
 
     const interfaceParams = params.filter(p=>p.memberName).map(p=>{
       return `${_.upperFirst(p.memberName)}${(p.optional?"?":"")}: ${p.type.name};`;
@@ -185,7 +186,10 @@ function walkObject(obj,visit, parent = null){
           //format: p.type.name.replace('number',"integer")
         }
 
-      }))
+      })).reduce((p,n)=>([
+        ...p,
+        (p.map(o=>o.name).includes(n.name) ? null : n)
+      ]),[]).filter(Boolean);
       parameters = (parameters.length) ? parameters: [];
 
 
@@ -219,7 +223,7 @@ function walkObject(obj,visit, parent = null){
               message: { type: "string" },
               line: { type: "number" },
             }
-          
+
           }
         },
         LoginUser:{
@@ -301,6 +305,7 @@ function walkObject(obj,visit, parent = null){
     },
     security: [{ api_key: [] }]
   };
+
 
 
   const openapi = JSON.stringify(OpenApi, null, 4);
