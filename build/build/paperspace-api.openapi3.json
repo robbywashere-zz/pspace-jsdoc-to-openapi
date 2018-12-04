@@ -1,0 +1,2951 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "paperspace-api"
+    },
+    "servers": [
+        {
+            "url": "https://api.paperspace.io"
+        }
+    ],
+    "paths": {
+        "/jobs/{jobId}/artifactsDestroy": {
+            "post": {
+                "summary": "Destroy artifact files of the job with the given id",
+                "operationId": "JobsArtifactsDestroy",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "required": true,
+                        "description": "The id of the job to destroy artifacts for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "files",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional; if destroying only certain files, a wildcard pattern to match against, e.g., \"myfiles*\".  Note: if you include a wildcard you must double-quote the files argument.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/artifactsGet": {
+            "get": {
+                "summary": "Get the artifacts files for the job with the given id",
+                "operationId": "JobsArtifactsGet",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the job to get artifacts for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "files",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; if getting only certain files, a wildcard pattern to match against, e.g., \"myfiles*\".  Note: if you include a wildcard you must double-quote the files argument.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dest",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; an existing directory to copy the artifacts files to.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "json",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; return JSON object instead of writing to standard out.  '--json' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsArtifactsGet"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/artifactsList": {
+            "get": {
+                "summary": "List job artifact files for the specified job",
+                "operationId": "JobsArtifactsList",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the job to list artifacts for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "files",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; wildcard expression of file(s) to list, e.g., \"myfiles*\".  Note: if you include a wildcard you must double-quote the files argument.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; include file size in bytes.  '--size' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "links",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; include https links to artifacts.  Note: links are only valid for 8 hours. '--links' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "json",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; return JSON object instead of writing to standard out.  '--json' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsArtifactsList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{jobId}/clone": {
+            "post": {
+                "summary": "Clone an exiting job and queue the cloned copy to run",
+                "operationId": "JobsClone",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the job to clone",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsClone"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/createJob": {
+            "post": {
+                "summary": "Create a new Paperspace job, and tail its log output if run at the command line",
+                "operationId": "JobsCreate",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "container",
+                        "in": "body",
+                        "required": true,
+                        "description": "A required reference to a docker image in a public or private docker registry, or a container name provided by Paperspace.  Docker image repository references must be in lowercase and may include a tag and a hostname prefix followed by a slash; if ommitted the hostname defaults to that of the public Docker Hub registry.  An example docker image reference: 'docker.io/mynamespace/myimage:mytag'.  A container name may be mixed case.  (Designated container names are currently only provided as part of various Gradient tutorials and samples.)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cluster",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional cluster name of a cluster to run the job on. Only one of cluster or clusterId may be specified.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "clusterId",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional cluster id of a cluster to run the job on. Only one of cluster or clusterId may be specified.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "machineType",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional machine type to run the job on: either 'GPU+', 'P4000', 'P5000', 'P6000', 'V100', 'K80', 'P100', 'TPU', or 'GradientNode'.<p>Defaults to 'K80'. <P>Note: the 'K80', 'P100', and 'TPU' machineTypes run on Google Cloud Platform (GCP).  The other machineTypes run on the Paperspace Cloud.  Google Cloud platform and Paperspace Cloud have distict Job Storage spaces;  Job storage is not currently shared between these two cloud environments.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional name or description for this job.  If ommitted, the job name defaults to 'job N' where N represents the Nth job instance for the given project.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "project",
+                        "in": "body",
+                        "required": false,
+                        "description": "The name of the project for this job.  If not provided, this is taken from the .ps_project/config.json file, or the current directory name.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "projectId",
+                        "in": "body",
+                        "required": false,
+                        "description": "The poject id of an existing project for this job.  Note: if projectId is specified, the project parameter cannot be specified.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "command",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional command to run within the workspace or container.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "workspace",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional path to a workspace, or link to a git repository to upload and merge with the container.  If a zip file name is provided it is uploaded instead.  If no workspace is provided the current directory is zipped up and transferred.  If the workspace is 'none', no workspace is merged and the container is run as-is. To download a git repository provide an https repository link and optionally prefix it with 'git+', e.g. 'https://github.com/MyProjects/MyRepo.git'.  If the 'git+' prefix is not specified, it is added at the time of download to the job runner machine.  S3 links are also supported using the schema 's3://bucketname/objectname'.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "codeCommit",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional reference to git commit hash if local workspace is a git repository. Found at runtime.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dataset",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional reference to a dataset to be merged with the container.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "registryUsername",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional username for accessing an image hosted on a private container registry.  Note: you must specify this option every time a private image is specified for the container.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "registryPassword",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional password for accessing an image hosted on a private container registry.  Note: you must specify this option every time a private image is specified for the container.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "workspaceUsername",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional username for accessing a private git repository.  Note: you must specify this option every time a private git repository is specified for the workspace.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "workspacePassword",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional password for accessing a private git repository.  We recommned using an OAuth token (GitHub instructions can be found <a href=\"https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/\">here</a>).  Note: you must specify this option every time a private git repository is specified for the workspace.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ports",
+                        "in": "body",
+                        "required": false,
+                        "description": "An optional list of port mappings to open on the job cluster machine while the job is running.  The port mappings are specified as 'XXXX:YYYY' where XXXX is an external port number and YYYY is an internal port number.  Mulitple port mappings can be provided as a comma separated list. Port numbers must be greater than 1023. Note: only /tcp protocol usage is supported.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sharedMemMBytes",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional; shared memory size for the job container in megabytes (1 megabyte = 1024 * 1024 bytes).  Cannot exceed total memory size for the given machine type.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "nodeAttrs",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional; a JSON expression describing the node attributes for a compatible GradientNode machine to run this job.  See the Gradient-Node documentation for more info.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "tail",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional; defaults to true in command line mode only.  Specify false to disable automatic tailing.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "json",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional; if true, do not write progress to standard out.  '--json' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsCreate"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{jobId}/destroy": {
+            "post": {
+                "summary": "Destroy the job with the given id",
+                "operationId": "JobsDestroy",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "required": true,
+                        "description": "The id of the job to destroy",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/getJobs": {
+            "get": {
+                "summary": "List information about all jobs available to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "JobsList",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/logs": {
+            "get": {
+                "summary": "Stream the logs for the job with the given id, while the job is running or after it has stopped",
+                "operationId": "JobsLogs",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the job to logs",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tail",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; if tail is specified logs will be streamed until the job stops.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "line",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; if line is specified logs only logs after that line will be returned (up to limit).",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; number of log lines to retrieve on each request; default limit is 2000.",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "json",
+                        "in": "query",
+                        "required": false,
+                        "description": "Optional; return JSON object instead of writing to standard out.  '--json' with no value is equivalent to true.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsLogs"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/getClusterAvailableMachineTypes": {
+            "get": {
+                "summary": "Return a list of available cluster machine types",
+                "operationId": "JobsMachineTypes",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsMachineTypes"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/getJob": {
+            "get": {
+                "summary": "Wait for the job with the given id to enter a certain job state",
+                "operationId": "JobsWaitfor",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the job to wait for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": true,
+                        "description": "Name of the state to wait for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JobsWaitfor"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{jobId}/stop": {
+            "post": {
+                "summary": "Stop an individual job",
+                "operationId": "JobsStop",
+                "tags": [
+                    "jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the job to shut down",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/apiTokens/createPublic": {
+            "post": {
+                "summary": "Logs in the user and acquires an api key",
+                "operationId": "LoginUser",
+                "tags": [
+                    "login"
+                ],
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "description": "Email address of the paperspace user to log in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "description": "Password for the specified email address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "apiToken",
+                        "in": "body",
+                        "required": false,
+                        "description": "Optional name of an existing API token for the user's account",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginUser"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/getAvailability": {
+            "get": {
+                "summary": "Get machine availability for the given region and machine type",
+                "operationId": "MachinesAvailability",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "description": "Name of the region: either 'East Coast (NY2)', 'West Coast (CA1)', or 'Europe (AMS1)'",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "machineType",
+                        "in": "query",
+                        "required": true,
+                        "description": "Machine type: either 'GPU+', 'P4000', 'P5000', 'P6000', or 'V100'<p>",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MachinesAvailability"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/createSingleMachinePublic": {
+            "post": {
+                "summary": "Create a new Paperspace virtual machine",
+                "operationId": "MachinesCreate",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "region",
+                        "in": "body",
+                        "required": true,
+                        "description": "Name of the region: either 'East Coast (NY2)', 'West Coast (CA1)', or 'Europe (AMS1)'",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "machineType",
+                        "in": "body",
+                        "required": true,
+                        "description": "Machine type: either 'Air', 'Standard', 'Pro', 'Advanced', 'GPU+', 'P4000', 'P5000', 'P6000', 'V100', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', or 'C10'<p>\nNote:<br>\nWindows os templates cannot be used to create CPU-only machine types 'C1' - 'C10'.<br>\nUbuntu os templates cannot be used to create GRID GPU machine types: 'Air', 'Standard', 'Pro', or 'Advanced'.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "body",
+                        "required": true,
+                        "description": "Storage size for the machine in GB",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "billingType",
+                        "in": "body",
+                        "required": true,
+                        "description": "Either 'monthly' or 'hourly' billing",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "machineName",
+                        "in": "body",
+                        "required": true,
+                        "description": "A memorable name for this machine",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "templateId",
+                        "in": "body",
+                        "required": true,
+                        "description": "Template id of the template to use for creating this machine",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "assignPublicIp",
+                        "in": "body",
+                        "required": false,
+                        "description": "Assign a new public ip address on machine creation. Cannot be used with dynamicPublicIp.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "dynamicPublicIp",
+                        "in": "body",
+                        "required": false,
+                        "description": "Assigns a new public ip address on machine start and releases it from the account on machine stop. Cannot be used with assignPublicIp.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "networkId",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating on a specific network, specify its id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "teamId",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating the machine for a team, specify the team id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "body",
+                        "required": false,
+                        "description": "If assigning to an existing user other than yourself, specify the user id (mutually exclusive with email, password, firstName, lastName)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating a new user for this machine, specify their email address (mutually exclusive with userId)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating a new user, specify their password (mutually exclusive with userId)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating a new user, specify their first name (mutually exclusive with userId)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "body",
+                        "required": false,
+                        "description": "If creating a new user, specify their last name (mutually exclusive with userId)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "notificationEmail",
+                        "in": "body",
+                        "required": false,
+                        "description": "Send a notification to this email address when complete",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "scriptId",
+                        "in": "body",
+                        "required": false,
+                        "description": "The script id of a script to be run on startup.  See the [Script Guide]{@link https://paperspace.github.io/paperspace-node/scripts.md} for more info on using scripts.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MachinesCreate"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/{machineId}/destroyMachine": {
+            "post": {
+                "summary": "Destroy the machine with the given id",
+                "operationId": "MachinesDestroy",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "path",
+                        "required": true,
+                        "description": "The id of the machine to destroy",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "releasePublicIp",
+                        "in": "body",
+                        "required": false,
+                        "description": "releases any assigned public ip address for the machine; defaults to false",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/getMachines": {
+            "get": {
+                "summary": "List information about all machines available to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "MachinesList",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MachinesList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/{machineId}/restart": {
+            "post": {
+                "summary": "Restart an individual machine",
+                "operationId": "MachinesRestart",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the machine to restart",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/getMachinePublic": {
+            "get": {
+                "summary": "Wait for the machine with the given id to enter a certain machine state",
+                "operationId": "MachinesWaitfor",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the machine to wait for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": true,
+                        "description": "Name of the state to wait for, either 'off', 'serviceready', 'ready'",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MachinesWaitfor"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/{machineId}/start": {
+            "post": {
+                "summary": "Start up an individual machine",
+                "operationId": "MachinesStart",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the machine to start",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/{machineId}/stop": {
+            "post": {
+                "summary": "Stop an individual machine",
+                "operationId": "MachinesStop",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the machine to shut down",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/{machineId}/updateMachinePublic": {
+            "post": {
+                "summary": "Update attributes of a machine",
+                "operationId": "MachinesUpdate",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Id of the machine to update",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "machineName",
+                        "in": "body",
+                        "required": false,
+                        "description": "New name for the machine",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "shutdownTimeoutInHours",
+                        "in": "body",
+                        "required": false,
+                        "description": "Number of hours before machine is shutdown if no one is logged in via the Paperspace client",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "shutdownTimeoutForces",
+                        "in": "body",
+                        "required": false,
+                        "description": "Force shutdown at shutdown timeout, even if there is a Paperspace client connection",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "autoSnapshotFrequency",
+                        "in": "body",
+                        "required": false,
+                        "description": "One of 'hour', 'day', 'week', or null",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "autoSnapshotSaveCount",
+                        "in": "body",
+                        "required": false,
+                        "description": "Number of snapshots to save",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "performAutoSnapshot",
+                        "in": "body",
+                        "required": false,
+                        "description": "Perform auto snapshots",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "dynamicPublicIp",
+                        "in": "body",
+                        "required": false,
+                        "description": "If true, assigns a new public ip address on machine start and releases it from the account on machine stop",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/machines/getUtilization": {
+            "get": {
+                "summary": "Get machine utilization data for the machine with the given id",
+                "operationId": "MachinesUtilization",
+                "tags": [
+                    "machines"
+                ],
+                "parameters": [
+                    {
+                        "name": "machineId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the machine to get utilization data for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "billingMonth",
+                        "in": "query",
+                        "required": true,
+                        "description": "Billing period to query in `YYYY-MM` format",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MachinesUtilization"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/networks/getNetworks": {
+            "get": {
+                "summary": "List information about all networks available to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "NetworksList",
+                "tags": [
+                    "networks"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NetworksList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scripts/createScript": {
+            "post": {
+                "summary": "Creates a new startup script",
+                "operationId": "ScriptsCreate",
+                "tags": [
+                    "scripts"
+                ],
+                "parameters": [
+                    {
+                        "name": "scriptName",
+                        "in": "body",
+                        "required": true,
+                        "description": "A unique name for the script",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "scriptFile",
+                        "in": "body",
+                        "required": false,
+                        "description": "File path to a file containing the script data; either scriptFile or scriptText must be provide.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "scriptText",
+                        "in": "body",
+                        "required": false,
+                        "description": "A string containing the script text; either scriptFile or scriptText must be provide.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "scriptDescription",
+                        "in": "body",
+                        "required": false,
+                        "description": "Description of the script",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "isEnabled",
+                        "in": "body",
+                        "required": false,
+                        "description": "Determines if the script is enabled or not.  Defaults to true",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "runOnce",
+                        "in": "body",
+                        "required": false,
+                        "description": "Determines if the script is run on first boot or every boot.  Defaults to false",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "machineId",
+                        "in": "body",
+                        "required": false,
+                        "description": "Machine id of a machine that should execute this script at startup",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScriptsCreate"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scripts/{scriptId}/destroy": {
+            "post": {
+                "summary": "Destroys the starup script with the given id",
+                "operationId": "ScriptsDestroy",
+                "tags": [
+                    "scripts"
+                ],
+                "parameters": [
+                    {
+                        "name": "scriptId",
+                        "in": "path",
+                        "required": true,
+                        "description": "The id of the script to destroy",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Expected response to a valid request"
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scripts/getScripts": {
+            "get": {
+                "summary": "List information about all scripts assigned to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "ScriptsList",
+                "tags": [
+                    "scripts"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScriptsList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scripts/getScript": {
+            "get": {
+                "summary": "Show information for the script with the given id, except for the script text",
+                "operationId": "ScriptsShow",
+                "tags": [
+                    "scripts"
+                ],
+                "parameters": [
+                    {
+                        "name": "scriptId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the script to show",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScriptsShow"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/scripts/getScriptText": {
+            "get": {
+                "summary": "Gets the text of the script with the given id",
+                "operationId": "ScriptsText",
+                "tags": [
+                    "scripts"
+                ],
+                "parameters": [
+                    {
+                        "name": "scriptId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Id of the script to get text for",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScriptsText"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/getTemplates": {
+            "get": {
+                "summary": "List information about all templates available to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "TemplatesList",
+                "tags": [
+                    "templates"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TemplatesList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/getUsers": {
+            "get": {
+                "summary": "List information about all users available to either the current authenticated user or the team, if the user belongs to a team",
+                "operationId": "UsersList",
+                "tags": [
+                    "users"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsersList"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "JobsArtifactsGet": {
+                "type": "object",
+                "properties": {
+                    "Credentials": {
+                        "type": "object",
+                        "properties": {
+                            "AccessKeyId": {
+                                "type": "string"
+                            },
+                            "SecretAccessKey": {
+                                "type": "string"
+                            },
+                            "SessionToken": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "string"
+                    },
+                    "folder": {
+                        "type": "string"
+                    }
+                }
+            },
+            "JobsArtifactsList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "file": {
+                            "type": "string"
+                        },
+                        "size": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "file",
+                        "size"
+                    ]
+                }
+            },
+            "JobsClone": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "workspaceUrl": {
+                        "type": "string"
+                    },
+                    "workingDirectory": {
+                        "type": "string"
+                    },
+                    "artifactsDirectory": {
+                        "type": "string"
+                    },
+                    "entrypoint": {
+                        "type": "string"
+                    },
+                    "projectId": {
+                        "type": "string"
+                    },
+                    "project": {
+                        "type": "string"
+                    },
+                    "container": {
+                        "type": "string"
+                    },
+                    "machineType": {
+                        "type": "string"
+                    },
+                    "cluster": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "startedByUserId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "jobError": {
+                        "type": "boolean"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "dtModified": {
+                        "type": "string"
+                    },
+                    "dtProvisioningStarted": {
+                        "type": "string"
+                    },
+                    "dtProvisioningFinished": {
+                        "type": "string"
+                    },
+                    "dtStarted": {
+                        "type": "string"
+                    },
+                    "dtFinished": {
+                        "type": "string"
+                    },
+                    "dtTeardownStarted": {
+                        "type": "string"
+                    },
+                    "dtTeardownFinished": {
+                        "type": "string"
+                    },
+                    "dtDeleted": {
+                        "type": "string"
+                    },
+                    "exitCode": {
+                        "type": "number"
+                    }
+                }
+            },
+            "JobsCreate": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "workspaceUrl": {
+                        "type": "string"
+                    },
+                    "workingDirectory": {
+                        "type": "string"
+                    },
+                    "artifactsDirectory": {
+                        "type": "string"
+                    },
+                    "entrypoint": {
+                        "type": "string"
+                    },
+                    "projectId": {
+                        "type": "string"
+                    },
+                    "project": {
+                        "type": "string"
+                    },
+                    "container": {
+                        "type": "string"
+                    },
+                    "machineType": {
+                        "type": "string"
+                    },
+                    "cluster": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "startedByUserId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "jobError": {
+                        "type": "boolean"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "dtModified": {
+                        "type": "string"
+                    },
+                    "dtProvisioningStarted": {
+                        "type": "string"
+                    },
+                    "dtProvisioningFinished": {
+                        "type": "string"
+                    },
+                    "dtStarted": {
+                        "type": "string"
+                    },
+                    "dtFinished": {
+                        "type": "string"
+                    },
+                    "dtTeardownStarted": {
+                        "type": "string"
+                    },
+                    "dtTeardownFinished": {
+                        "type": "string"
+                    },
+                    "dtDeleted": {
+                        "type": "string"
+                    },
+                    "exitCode": {
+                        "type": "number"
+                    },
+                    "storageRegion": {
+                        "type": "string"
+                    },
+                    "clusterMachine": {
+                        "type": "string"
+                    },
+                    "ipAddress": {
+                        "type": "string"
+                    },
+                    "ports": {
+                        "type": "string"
+                    }
+                }
+            },
+            "JobsList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "workspaceUrl": {
+                            "type": "string"
+                        },
+                        "workingDirectory": {
+                            "type": "string"
+                        },
+                        "artifactsDirectory": {
+                            "type": "string"
+                        },
+                        "entrypoint": {
+                            "type": "string"
+                        },
+                        "projectId": {
+                            "type": "string"
+                        },
+                        "project": {
+                            "type": "string"
+                        },
+                        "container": {
+                            "type": "string"
+                        },
+                        "machineType": {
+                            "type": "string"
+                        },
+                        "cluster": {
+                            "type": "string"
+                        },
+                        "usageRate": {
+                            "type": "string"
+                        },
+                        "startedByUserId": {
+                            "type": "string"
+                        },
+                        "parentJobId": {
+                            "type": "string"
+                        },
+                        "jobError": {
+                            "type": "boolean"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "dtModified": {
+                            "type": "string"
+                        },
+                        "dtProvisioningStarted": {
+                            "type": "string"
+                        },
+                        "dtProvisioningFinished": {
+                            "type": "string"
+                        },
+                        "dtStarted": {
+                            "type": "string"
+                        },
+                        "dtFinished": {
+                            "type": "string"
+                        },
+                        "dtTeardownStarted": {
+                            "type": "string"
+                        },
+                        "dtTeardownFinished": {
+                            "type": "string"
+                        },
+                        "dtDeleted": {
+                            "type": "string"
+                        },
+                        "exitCode": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "JobsLogs": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string"
+                        },
+                        "line": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "JobsMachineTypes": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "region": {
+                            "type": "string"
+                        },
+                        "cluster": {
+                            "type": "string"
+                        },
+                        "machineType": {
+                            "type": "string"
+                        },
+                        "isBusy": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "region",
+                        "cluster",
+                        "machineType",
+                        "isBusy"
+                    ]
+                }
+            },
+            "JobsShow": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "workspaceUrl": {
+                        "type": "string"
+                    },
+                    "workingDirectory": {
+                        "type": "string"
+                    },
+                    "artifactsDirectory": {
+                        "type": "string"
+                    },
+                    "entrypoint": {
+                        "type": "string"
+                    },
+                    "projectId": {
+                        "type": "string"
+                    },
+                    "project": {
+                        "type": "string"
+                    },
+                    "container": {
+                        "type": "string"
+                    },
+                    "machineType": {
+                        "type": "string"
+                    },
+                    "cluster": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "startedByUserId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "jobError": {
+                        "type": "boolean"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "dtModified": {
+                        "type": "string"
+                    },
+                    "dtProvisioningStarted": {
+                        "type": "string"
+                    },
+                    "dtProvisioningFinished": {
+                        "type": "string"
+                    },
+                    "dtStarted": {
+                        "type": "string"
+                    },
+                    "dtFinished": {
+                        "type": "string"
+                    },
+                    "dtTeardownStarted": {
+                        "type": "string"
+                    },
+                    "dtTeardownFinished": {
+                        "type": "string"
+                    },
+                    "dtDeleted": {
+                        "type": "string"
+                    },
+                    "exitCode": {
+                        "type": "number"
+                    }
+                }
+            },
+            "JobsWaitfor": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "workspaceUrl": {
+                        "type": "string"
+                    },
+                    "workingDirectory": {
+                        "type": "string"
+                    },
+                    "artifactsDirectory": {
+                        "type": "string"
+                    },
+                    "entrypoint": {
+                        "type": "string"
+                    },
+                    "projectId": {
+                        "type": "string"
+                    },
+                    "project": {
+                        "type": "string"
+                    },
+                    "container": {
+                        "type": "string"
+                    },
+                    "machineType": {
+                        "type": "string"
+                    },
+                    "cluster": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "startedByUserId": {
+                        "type": "string"
+                    },
+                    "parentJobId": {
+                        "type": "string"
+                    },
+                    "jobError": {
+                        "type": "boolean"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "dtModified": {
+                        "type": "string"
+                    },
+                    "dtProvisioningStarted": {
+                        "type": "string"
+                    },
+                    "dtProvisioningFinished": {
+                        "type": "string"
+                    },
+                    "dtStarted": {
+                        "type": "string"
+                    },
+                    "dtFinished": {
+                        "type": "string"
+                    },
+                    "dtTeardownStarted": {
+                        "type": "string"
+                    },
+                    "dtTeardownFinished": {
+                        "type": "string"
+                    },
+                    "dtDeleted": {
+                        "type": "string"
+                    },
+                    "exitCode": {
+                        "type": "number"
+                    }
+                }
+            },
+            "LoginUser": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "key": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "key"
+                ]
+            },
+            "MachinesAvailability": {
+                "type": "object",
+                "properties": {
+                    "available": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "MachinesCreate": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "os": {
+                        "type": "string"
+                    },
+                    "ram": {
+                        "type": "string"
+                    },
+                    "cpus": {
+                        "type": "number"
+                    },
+                    "gpu": {
+                        "type": "string"
+                    },
+                    "storageTotal": {
+                        "type": "string"
+                    },
+                    "storageUsed": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "shutdownTimeoutInHours": {
+                        "type": "number"
+                    },
+                    "shutdownTimeoutForces": {
+                        "type": "boolean"
+                    },
+                    "performAutoSnapshot": {
+                        "type": "boolean"
+                    },
+                    "autoSnapshotFrequency": {
+                        "type": "number"
+                    },
+                    "autoSnapshotSaveCount": {
+                        "type": "number"
+                    },
+                    "agentType": {
+                        "type": "string"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "updatesPending": {
+                        "type": "boolean"
+                    },
+                    "networkId": {
+                        "type": "string"
+                    },
+                    "privateIpAddress": {
+                        "type": "string"
+                    },
+                    "publicIpAddress": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "teamId": {
+                        "type": "string"
+                    },
+                    "scriptId": {
+                        "type": "string"
+                    },
+                    "dtLastRun": {
+                        "type": "string"
+                    },
+                    "dynamicPublicIp": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MachinesList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "os": {
+                            "type": "string"
+                        },
+                        "ram": {
+                            "type": "string"
+                        },
+                        "cpus": {
+                            "type": "number"
+                        },
+                        "gpu": {
+                            "type": "string"
+                        },
+                        "storageTotal": {
+                            "type": "string"
+                        },
+                        "storageUsed": {
+                            "type": "string"
+                        },
+                        "usageRate": {
+                            "type": "string"
+                        },
+                        "shutdownTimeoutInHours": {
+                            "type": "number"
+                        },
+                        "shutdownTimeoutForces": {
+                            "type": "boolean"
+                        },
+                        "performAutoSnapshot": {
+                            "type": "boolean"
+                        },
+                        "autoSnapshotFrequency": {
+                            "type": "number"
+                        },
+                        "autoSnapshotSaveCount": {
+                            "type": "number"
+                        },
+                        "agentType": {
+                            "type": "string"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "updatesPending": {
+                            "type": "boolean"
+                        },
+                        "networkId": {
+                            "type": "string"
+                        },
+                        "privateIpAddress": {
+                            "type": "string"
+                        },
+                        "publicIpAddress": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        },
+                        "userId": {
+                            "type": "string"
+                        },
+                        "teamId": {
+                            "type": "string"
+                        },
+                        "scriptId": {
+                            "type": "string"
+                        },
+                        "dtLastRun": {
+                            "type": "string"
+                        },
+                        "dynamicPublicIp": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "MachinesShow": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "os": {
+                        "type": "string"
+                    },
+                    "ram": {
+                        "type": "string"
+                    },
+                    "cpus": {
+                        "type": "number"
+                    },
+                    "gpu": {
+                        "type": "string"
+                    },
+                    "storageTotal": {
+                        "type": "string"
+                    },
+                    "storageUsed": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "shutdownTimeoutInHours": {
+                        "type": "number"
+                    },
+                    "shutdownTimeoutForces": {
+                        "type": "boolean"
+                    },
+                    "performAutoSnapshot": {
+                        "type": "boolean"
+                    },
+                    "autoSnapshotFrequency": {
+                        "type": "number"
+                    },
+                    "autoSnapshotSaveCount": {
+                        "type": "number"
+                    },
+                    "agentType": {
+                        "type": "string"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "updatesPending": {
+                        "type": "boolean"
+                    },
+                    "networkId": {
+                        "type": "string"
+                    },
+                    "privateIpAddress": {
+                        "type": "string"
+                    },
+                    "publicIpAddress": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "teamId": {
+                        "type": "string"
+                    },
+                    "scriptId": {
+                        "type": "string"
+                    },
+                    "dtLastRun": {
+                        "type": "string"
+                    },
+                    "dynamicPublicIp": {
+                        "type": "string"
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "state": {
+                                    "type": "string"
+                                },
+                                "errorMsg": {
+                                    "type": "string"
+                                },
+                                "handle": {
+                                    "type": "string"
+                                },
+                                "dtModified": {
+                                    "type": "string"
+                                },
+                                "dtFinished": {
+                                    "type": "string"
+                                },
+                                "dtCreated": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "state",
+                                "errorMsg",
+                                "handle",
+                                "dtModified",
+                                "dtFinished",
+                                "dtCreated"
+                            ]
+                        }
+                    }
+                }
+            },
+            "MachinesUtilization": {
+                "type": "object",
+                "properties": {
+                    "machineId": {
+                        "type": "string"
+                    },
+                    "utilization": {
+                        "type": "object",
+                        "properties": {
+                            "machineId": {
+                                "type": "string"
+                            },
+                            "secondsUsed": {
+                                "type": "number"
+                            },
+                            "hourlyRate": {
+                                "type": "string"
+                            },
+                            "billingMonth": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "storageUtilization": {
+                        "type": "object",
+                        "properties": {
+                            "machineId": {
+                                "type": "string"
+                            },
+                            "secondsUsed": {
+                                "type": "number"
+                            },
+                            "monthlyRate": {
+                                "type": "string"
+                            },
+                            "billingMonth": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "MachinesWaitfor": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "os": {
+                        "type": "string"
+                    },
+                    "ram": {
+                        "type": "string"
+                    },
+                    "cpus": {
+                        "type": "number"
+                    },
+                    "gpu": {
+                        "type": "string"
+                    },
+                    "storageTotal": {
+                        "type": "string"
+                    },
+                    "storageUsed": {
+                        "type": "string"
+                    },
+                    "usageRate": {
+                        "type": "string"
+                    },
+                    "shutdownTimeoutInHours": {
+                        "type": "number"
+                    },
+                    "shutdownTimeoutForces": {
+                        "type": "boolean"
+                    },
+                    "performAutoSnapshot": {
+                        "type": "boolean"
+                    },
+                    "autoSnapshotFrequency": {
+                        "type": "number"
+                    },
+                    "autoSnapshotSaveCount": {
+                        "type": "number"
+                    },
+                    "agentType": {
+                        "type": "string"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "updatesPending": {
+                        "type": "boolean"
+                    },
+                    "networkId": {
+                        "type": "string"
+                    },
+                    "privateIpAddress": {
+                        "type": "string"
+                    },
+                    "publicIpAddress": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "teamId": {
+                        "type": "string"
+                    },
+                    "scriptId": {
+                        "type": "string"
+                    },
+                    "dtLastRun": {
+                        "type": "string"
+                    },
+                    "dynamicPublicIp": {
+                        "type": "string"
+                    }
+                }
+            },
+            "NetworksList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "network": {
+                            "type": "string"
+                        },
+                        "netmask": {
+                            "type": "string"
+                        },
+                        "teamId": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "ScriptsCreate": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "ownerType": {
+                        "type": "string"
+                    },
+                    "ownerId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "runOnce": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "ScriptsList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "ownerType": {
+                            "type": "string"
+                        },
+                        "ownerId": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "isEnabled": {
+                            "type": "boolean"
+                        },
+                        "runOnce": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            },
+            "ScriptsShow": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "ownerType": {
+                        "type": "string"
+                    },
+                    "ownerId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "dtCreated": {
+                        "type": "string"
+                    },
+                    "isEnabled": {
+                        "type": "boolean"
+                    },
+                    "runOnce": {
+                        "type": "boolean"
+                    },
+                    "machines": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "machineId": {
+                                    "type": "string"
+                                },
+                                "dtLastRun": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "machineId",
+                                "dtLastRun"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ScriptsText": {
+                "type": "string"
+            },
+            "TemplatesList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "label": {
+                            "type": "string"
+                        },
+                        "os": {
+                            "type": "string"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "teamId": {
+                            "type": "string"
+                        },
+                        "userId": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "name",
+                        "label",
+                        "os",
+                        "dtCreated"
+                    ]
+                }
+            },
+            "UsersList": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "firstname": {
+                            "type": "string"
+                        },
+                        "lastname": {
+                            "type": "string"
+                        },
+                        "dtCreated": {
+                            "type": "string"
+                        },
+                        "teamId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "email",
+                        "firstname",
+                        "lastname",
+                        "dtCreated",
+                        "teamId"
+                    ]
+                }
+            }
+        },
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "name": "x-api-key",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "api_key": []
+        }
+    ]
+}
