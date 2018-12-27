@@ -226,7 +226,7 @@ function walkObject(obj, visit, parent = null) {
     for (const param of params) {
       if (names.includes(param.memberName)) continue; //skip if already present due to human error
       names.push(param.memberName);
-      if (!param.type) console.log(param);
+      //if (!param.type) console.log(param);
       let p = {
         name: param.memberName,
         required: param.type.type === "OptionalType" ? false : true,
@@ -469,3 +469,9 @@ function walkObject(obj, visit, parent = null) {
 })();
 
 //for FILE in $(find . -type f -exec grep -Iq . {} \; -and -print); do cat $FILE | ruby -e "puts (gets(nil).match(/\/\*.* \*\//m) || "").to_s.gsub(/\[|\]/,"")" > ${FILE}.jsdoc.js; done;
+/*
+    LoginUser2(parameters: LoginUserRequestBody & { foo: string }){
+      const { apiToken, email, password, ...rest } = parameters;
+      return this.LoginUser({ body: { apiToken, email, password } })
+    }
+    */

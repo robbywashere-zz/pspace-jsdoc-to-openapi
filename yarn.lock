@@ -2223,17 +2223,6 @@ swagger-schema-official@2.0.0-bab6bed:
   resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
   integrity sha1-cAcEaNbSl3ylI3suUZyn0Gouo/0=
 
-swagger-typescript-codegen@^1.5.3:
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/swagger-typescript-codegen/-/swagger-typescript-codegen-1.5.3.tgz#e95394671533d51652472819b6ca0a4a2342137e"
-  dependencies:
-    commander "^2.9.0"
-    js-beautify "^1.5.1"
-    jshint "^2.5.1"
-    lodash "^4.15.0"
-    mustache "^2.0.0"
-    update-notifier "^2.1.0"
-
 swagger2openapi@2.9.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/swagger2openapi/-/swagger2openapi-2.9.2.tgz#6b13003a0fdef50c76e88fb4fb62667954d03675"

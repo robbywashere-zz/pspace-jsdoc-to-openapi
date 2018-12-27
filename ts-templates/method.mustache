@@ -9,9 +9,18 @@
     {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
 {{/parameters}}
 */
+
 {{&methodName}}(parameters: {
-{{#parameters}}{{^isSingleton}}'{{&camelCaseName}}'{{&cardinality}}: {{> type}},
-{{/isSingleton}}{{/parameters}}
+{{#parameters}}
+{{^isSingleton}}
+  {{^isBodyParameter}}
+  '{{&camelCaseName}}'{{&cardinality}}: {{>type}},
+  {{/isBodyParameter}}
+  {{#properties}}
+  '{{&camelCaseName}}'{{&cardinality}}: {{&type}},
+  {{/properties}}
+{{/isSingleton}}
+{{/parameters}}
     $queryParameters?: any,
     $domain?: string
 }): Promise<ResponseWithBody<{{&successfulResponseType}}>> {
@@ -26,6 +35,19 @@
     headers['{{&name}}'] = {{&value}};
 {{/headers}}
 
+
+  {{#hasBodyParams}}
+  const bodyParams = [{{#parameters}}{{#isBodyParameter}}{{#properties}}'{{&camelCaseName}}',{{/properties}}{{/isBodyParameter}}{{/parameters}}];
+  bodyParams.forEach(bp=>{ if (parameters[bp] !== undefined) body = { ...(body||{}), [bp]: parameters[bp] }})
+
+  {{/hasBodyParams}}
+
+  {{#hasRequired}}
+  const requiredParams = [{{#parameters}}{{^isBodyParameter}}{{#required}}'{{&camelCaseName}}',{{/required}}{{/isBodyParameter}}{{/parameters}}];
+  const requiredBodyParams = [{{#parameters}}{{#isBodyParameter}}{{#properties}}{{#required}}'{{&camelCaseName}}',{{/required}}{{/properties}}{{/isBodyParameter}}{{/parameters}}];
+  [...requiredParams,requiredBodyParams].forEach(rp=>{ if (parameters[rp] === undefined) { throw new Error(`Missing required parameter ${rp}`) } })
+  {{/hasRequired}}
+  
 {{#parameters}}
 
     {{#isQueryParameter}}
@@ -63,11 +85,6 @@
         {{/isSingleton}}
     {{/isHeaderParameter}}
 
-    {{#isBodyParameter}}
-        if(parameters['{{&camelCaseName}}'] !== undefined) {
-            body = parameters['{{&camelCaseName}}'];
-        }
-    {{/isBodyParameter}}
 
     {{#isFormParameter}}
         {{#isSingleton}}
@@ -80,13 +97,8 @@
         {{/isSingleton}}
     {{/isFormParameter}}
 
-    {{#required}}
-        if(parameters['{{&camelCaseName}}'] === undefined) {
-            reject(new Error('Missing required {{&paramType}} parameter: {{&camelCaseName}}'));
-            return;
-        }
-    {{/required}}
-
+    
+    
 {{/parameters}}
 
 if(parameters.$queryParameters) {
