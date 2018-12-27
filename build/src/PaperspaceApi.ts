@@ -1,8 +1,10 @@
-import request, {
+import {
     SuperAgentStatic,
     SuperAgentRequest,
     Response
 } from "superagent";
+
+import * as request from "superagent";
 
 export type RequestHeaders = {
     [header: string]: string;
@@ -13,9 +15,7 @@ export type ConfigureRequestHandler = (agent: SuperAgentRequest) => SuperAgentRe
 export type CallbackHandler = (err: any, res ? : request.Response) => void;
 export type Error = {
     'code' ? : number
-
     'message' ? : string
-
 };
 export type JobsArtifactsDestroyRequestBody = {
     'files' ? : string
