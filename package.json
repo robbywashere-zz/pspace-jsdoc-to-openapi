@@ -18,7 +18,7 @@
     "swagger-parser": "^6.0.2"
   },
   "scripts": {
-    "greppy": "node main.js && grep 'releasePublicIp' build/src/PaperspaceApi.ts",
+    "greppy": "node main.js && grep 'machineId' build/src/PaperspaceApi.ts",
     "build": "node main.js"
   }
 }

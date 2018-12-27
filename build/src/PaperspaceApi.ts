@@ -1258,6 +1258,14 @@ export class PaperspaceApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/json';
 
+            const requiredParams: Array < string > = ['jobId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
+
             const queryParams: Array < string > = ['jobId', 'files', 'dest', 'json', ];
 
             queryParams.forEach(qp => {
@@ -1302,6 +1310,14 @@ export class PaperspaceApi {
         let form: any = {};
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/json';
+
+            const requiredParams: Array < string > = ['jobId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
 
             const queryParams: Array < string > = ['jobId', 'files', 'size', 'links', 'json', ];
 
@@ -1577,6 +1593,14 @@ export class PaperspaceApi {
         return new Promise((resolve, reject) => {
             headers['Accept'] = 'application/json';
 
+            const requiredParams: Array < string > = ['jobId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
+
             const queryParams: Array < string > = ['jobId', 'tail', 'line', 'limit', 'json', ];
 
             queryParams.forEach(qp => {
@@ -1621,6 +1645,14 @@ export class PaperspaceApi {
             bodyParams.forEach(bp => {
                 if (bp in parameters) body[bp] = (parameters as any)[bp]
             });
+
+            const requiredParams: Array < string > = ['jobId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
 
             path = path.replace('{jobId}', `${parameters['jobId']}`);
 
@@ -2107,6 +2139,14 @@ export class PaperspaceApi {
                 if (bp in parameters) body[bp] = (parameters as any)[bp]
             });
 
+            const requiredParams: Array < string > = ['machineId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
+
             path = path.replace('{machineId}', `${parameters['machineId']}`);
 
             if (parameters.$queryParameters) {
@@ -2294,6 +2334,14 @@ export class PaperspaceApi {
             bodyParams.forEach(bp => {
                 if (bp in parameters) body[bp] = (parameters as any)[bp]
             });
+
+            const requiredParams: Array < string > = ['machineId', ];
+            const requiredBodyParams: Array < string > = [];
+            [...requiredParams, requiredBodyParams].forEach(rp => {
+                if (!(rp in parameters)) {
+                    throw new Error(`Missing required parameter ${rp}`)
+                }
+            })
 
             path = path.replace('{machineId}', `${parameters['machineId']}`);
 
