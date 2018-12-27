@@ -165,6 +165,7 @@ function walkObject(obj, visit, parent = null) {
         name
       }) => name && /\w+\.\w+/.test(name))
       .map(p => {
+        // console.log(p.description);
         if (p) {
           if (_.get(p, "type.type") === "OptionalType") {
             p.optional = true;
@@ -241,7 +242,8 @@ function walkObject(obj, visit, parent = null) {
       else {
         reqBodyProperties = { ...reqBodyProperties,
           [param.memberName]: {
-            type: param.type.name
+            type: param.type.name,
+            description: param.description
           }
         }
         if (param.type.type !== "OptionalType") {

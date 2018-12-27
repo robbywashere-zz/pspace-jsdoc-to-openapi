@@ -6,7 +6,23 @@
 {{/externalDocs}}
 * @name {{&className}}#{{&methodName}}
 {{#parameters}}
-    {{^isSingleton}} * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&camelCaseName}} - {{&description}}{{/isSingleton}}
+{{^isBodyParameter}}{{^isSingleton}}
+{{#required}}
+  * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&name}} - {{&description}}
+{{/required}}
+{{^required}}
+  * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> [{{&name}}] - {{&description}}
+{{/required}}
+{{/isSingleton}}
+{{/isBodyParameter}}
+{{#properties}}
+    {{#required}}
+  * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> {{&name}} - {{&description}}
+    {{/required}}
+    {{^required}}
+  * @param {{=<% %>=}}{<%&type%>}<%={{ }}=%> [{{&name}}] - {{&description}}
+    {{/required}}
+  {{/properties}}
 {{/parameters}}
 */
 
@@ -14,10 +30,15 @@
 {{#parameters}}
 {{^isSingleton}}
   {{^isBodyParameter}}
-  '{{&camelCaseName}}'{{&cardinality}}: {{>type}},
+  '{{&name}}'{{&cardinality}}: {{>type}},
   {{/isBodyParameter}}
   {{#properties}}
-  '{{&camelCaseName}}'{{&cardinality}}: {{&type}},
+  {{#required}}
+    '{{&name}}':{{&type}},
+  {{/required}}
+  {{#notRequired}}
+    '{{&name}}'?:{{&type}},
+  {{/notRequired}}
   {{/properties}}
 {{/isSingleton}}
 {{/parameters}}
@@ -37,19 +58,25 @@
 
 
   {{#hasBodyParams}}
-  const bodyParams = [{{#parameters}}{{#isBodyParameter}}{{#properties}}'{{&camelCaseName}}',{{/properties}}{{/isBodyParameter}}{{/parameters}}];
-  bodyParams.forEach(bp=>{ if (parameters[bp] !== undefined) body = { ...(body||{}), [bp]: parameters[bp] }})
+  const bodyParams: Array<string> = [{{#parameters}}{{#isBodyParameter}}{{#properties}}'{{&name}}',{{/properties}}{{/isBodyParameter}}{{/parameters}}];
+  bodyParams.forEach(bp=>{ if (bp in parameters) body[bp] = (parameters as any)[bp] });
 
   {{/hasBodyParams}}
 
   {{#hasRequired}}
-  const requiredParams = [{{#parameters}}{{^isBodyParameter}}{{#required}}'{{&camelCaseName}}',{{/required}}{{/isBodyParameter}}{{/parameters}}];
-  const requiredBodyParams = [{{#parameters}}{{#isBodyParameter}}{{#properties}}{{#required}}'{{&camelCaseName}}',{{/required}}{{/properties}}{{/isBodyParameter}}{{/parameters}}];
-  [...requiredParams,requiredBodyParams].forEach(rp=>{ if (parameters[rp] === undefined) { throw new Error(`Missing required parameter ${rp}`) } })
+  const requiredParams: Array<string> = [{{#parameters}}{{^isBodyParameter}}{{#required}}'{{&name}}',{{/required}}{{/isBodyParameter}}{{/parameters}}];
+  const requiredBodyParams: Array<string> = [{{#parameters}}{{#isBodyParameter}}{{#properties}}{{#required}}'{{&name}}',{{/required}}{{/properties}}{{/isBodyParameter}}{{/parameters}}];
+  [...requiredParams,requiredBodyParams].forEach(rp=>{ if (!(rp in parameters)) { throw new Error(`Missing required parameter ${rp}`) } })
   {{/hasRequired}}
   
-{{#parameters}}
 
+  {{#hasQueryParams}}
+  const queryParams: Array<string> = [{{#parameters}}{{^isPatternType}}{{#isQueryParameter}}{{^isSingleton}}{{^isPatternType}}'{{&name}}',{{/isPatternType}}{{/isSingleton}}{{/isQueryParameter}}{{/isPatternType}}{{/parameters}}];
+
+  queryParams.forEach(qp => { if (qp in parameters) queryParameters[qp] = (parameters as any)[qp]})
+
+  {{/hasQueryParams}}
+{{#parameters}}
     {{#isQueryParameter}}
         {{#isSingleton}}
             queryParameters['{{&name}}'] = '{{&singleton}}';
@@ -62,16 +89,12 @@
                     }
                 });
             {{/isPatternType}}
-            {{^isPatternType}}
-                if(parameters['{{&camelCaseName}}'] !== undefined) {
-                    queryParameters['{{&name}}'] = parameters['{{&camelCaseName}}'];
-                }
-            {{/isPatternType}}
         {{/isSingleton}}
     {{/isQueryParameter}}
 
+
     {{#isPathParameter}}
-        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&camelCaseName}}']}`);
+        path = path.replace('{{=<% %>=}}{<%&name%>}<%={{ }}=%>', `${parameters['{{&name}}']}`);
     {{/isPathParameter}}
 
     {{#isHeaderParameter}}
@@ -79,8 +102,8 @@
             headers['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                headers['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            if(parameters['{{&name}}'] !== undefined) {
+                headers['{{&name}}'] = parameters['{{&name}}'];
             }
         {{/isSingleton}}
     {{/isHeaderParameter}}
@@ -91,8 +114,8 @@
             form['{{&name}}'] = '{{&singleton}}';
         {{/isSingleton}}
         {{^isSingleton}}
-            if(parameters['{{&camelCaseName}}'] !== undefined) {
-                form['{{&name}}'] = parameters['{{&camelCaseName}}'];
+            if(parameters['{{&name}}'] !== undefined) {
+                form['{{&name}}'] = parameters['{{&name}}'];
             }
         {{/isSingleton}}
     {{/isFormParameter}}
