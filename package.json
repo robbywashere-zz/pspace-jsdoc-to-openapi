@@ -14,6 +14,7 @@
     "json5-relaxed": "0.5.1",
     "lodash": "^4.17.11",
     "shelljs": "^0.8.3",
+    "superagent": "^4.1.0",
     "swagger-js-codegen": "^1.12.0",
     "swagger-parser": "^6.0.2"
   },

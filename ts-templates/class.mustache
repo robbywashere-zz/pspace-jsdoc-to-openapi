@@ -3,7 +3,8 @@
 /// <reference path="{{&.}}" />
 {{/imports}}
 
-import request, { SuperAgentStatic, SuperAgentRequest, Response } from "superagent";
+import { SuperAgentStatic, SuperAgentRequest, Response } from "superagent";
+import * as request from "superagent";
 
 export type RequestHeaders = {
     [header: string]: string;
