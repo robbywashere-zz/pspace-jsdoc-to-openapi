@@ -1,0 +1,7 @@
+{
+    "name": "paperspace-api",
+    "version": "1.0.0",
+    "description": "paperspace-api",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+}

@@ -9,4 +9,3 @@ node_modules
 .minio-test-data
 __pycache__
 yarn-error.log
-build
