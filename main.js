@@ -218,7 +218,7 @@ function walkObject(obj, visit, parent = null) {
       content: {
         [MediaType]: {
           schema: {
-            '$ref': `#/components/schemas/${interfaceName}RequestBody`
+            '$ref': `#/components/schemas/${interfaceName}RequestParams`
           }
         }
       },
@@ -254,14 +254,14 @@ function walkObject(obj, visit, parent = null) {
       parameters.push(p);
     }
     if (Object.keys(reqBodyProperties).length > 0) {
-      reqSchema[`${interfaceName}RequestBody`] = {
+      reqSchema[`${interfaceName}RequestParams`] = {
         type: "object"
       };
       if (reqBodyRequired.length !== 0) {
         requestBody.required = true;
-        reqSchema[`${interfaceName}RequestBody`].required = reqBodyRequired;
+        reqSchema[`${interfaceName}RequestParams`].required = reqBodyRequired;
       }
-      reqSchema[`${interfaceName}RequestBody`].properties = reqBodyProperties
+      reqSchema[`${interfaceName}RequestParams`].properties = reqBodyProperties
     }
 
     const operationId = interfaceName; //???

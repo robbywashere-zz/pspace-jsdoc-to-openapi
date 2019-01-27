@@ -8,7 +8,7 @@ class PaperspaceClient extends PaperspaceApi {
     }));
   }
   async login({ email, password }: { email: string; password: string }) {
-    const response = await this.LoginUser({ body: { email, password } });
+    const response = await this.LoginUser({ email, password });
     this.setApiKey(response.body.key);
   }
 }

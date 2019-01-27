@@ -21,5 +21,10 @@
   "scripts": {
     "greppy": "node main.js && grep 'machineId' build/src/PaperspaceApi.ts",
     "build": "node main.js"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0"
   }
 }

@@ -3,6 +3,7 @@ node_modules
 .db
 .env
 .tmp
+build/
 .nyc_output
 .nyc_output/
 *.pyc
