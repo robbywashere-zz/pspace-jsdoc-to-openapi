@@ -1,9 +1,6 @@
-function readSpec(filepath) {
-  return JSON.parse(fs.readFileSync(filepath));
-}
+function typify(spec, reqParams) {
 
-
-function typify(spec) {
+  return walk(null, spec, new Set(reqParams));
 
   function walk(name, prop, req = new Set()) {
     const {
@@ -13,6 +10,8 @@ function typify(spec) {
       required = [],
       properties,
     } = prop;
+
+    const Enum = prop.enum;
 
     name = propName ? propName : name;
 
@@ -25,12 +24,17 @@ function typify(spec) {
     } else if (type === 'object') {
 
       const propNames = Object.keys(properties);
-      declaration += `{ `
+      declaration += `{ 
+        `
       for (let propName of propNames) {
-        declaration += `${walk(propName, properties[propName],new Set(required))}; `
+
+        declaration += `${walk(propName, properties[propName],new Set(required))}; 
+        `
       }
       declaration += `}`
     } else {
+      //assume string enum
+      if (Enum) return declaration += Enum.map(val => '"' + val + '"').join("|");
       return declaration += type;
     }
 
@@ -38,10 +42,10 @@ function typify(spec) {
     return declaration;
   };
 
-  return walk(null, spec);
 }
 
-const locate = (where) => ({ in: location
+const locate = (where) => ({
+  in: location
 }) => location === where
 
 const resolveRef = (node, ref = '') => {
@@ -58,7 +62,7 @@ const collectNames = (list) => list.reduce((p, {
 }) => [...p, name], [])
 
 
-function swag(spec, ClassName = "PaperspaceApi") {
+function swag(spec, ClassName = "Api") {
 
   let Def = {
     Types: [],
@@ -75,6 +79,8 @@ function swag(spec, ClassName = "PaperspaceApi") {
 
       if (resp !== undefined) {
         Def.Types.push(`type ${OpId}Response = ${typify(resolveRef(spec, resp['$ref']))};`);
+      } else {
+        Def.Types.push(`type ${OpId}Response = any;`);
       }
 
 
@@ -82,7 +88,8 @@ function swag(spec, ClassName = "PaperspaceApi") {
         .reduce((result, {
           schema,
           required
-        }) => ({ ...result,
+        }) => ({
+          ...result,
           ...(resolveRef(spec, schema['$ref']) || schema)
         }), {});
 
@@ -97,11 +104,11 @@ function swag(spec, ClassName = "PaperspaceApi") {
       }))];
 
       const requiredBodyParams = (bodyParams.required || []);
-      const ParamsTyped = allParams.map(qp => typify(qp)).join("; ");
       const RequiredParams = [...collectNames(pathParams), ...collectNames(queryParams.filter((p) => p.required)), ...requiredBodyParams];
       const QueryParams = collectNames(queryParams);
       const PathParams = collectNames(pathParams);
       const BodyParams = Object.keys(bodyParams.properties || {});
+      const ParamsTyped = allParams.map(qp => typify(qp, RequiredParams)).join("; ");
 
       Def.Methods.push({
         OpId,
@@ -121,65 +128,91 @@ function swag(spec, ClassName = "PaperspaceApi") {
 
 }
 
-const SwagDef = swag(require('./build/src/paperspace-api.swagger2.json'));
-
-console.log(SwagDef.Types.join("\n"));
-console.log(makeClass(SwagDef));
+const Global = `
+import request, { Response } from "superagent";
+export interface ResponseWithBody<T> extends Response {
+  body: T;
+}
+export type RequestType = {
+    path: string;
+    method: string;
+    bodyParams?: {};
+    queryParams?: {};
+  }
+export type RequestFunction = <T>(req: RequestType) => Promise<ResponseWithBody<T>>;
+`;
 
 function makeMethod(def) {
 
-  const path = (def.PathParams.length) ? `this.buildPath('${def.Path}',parameters)` : `'${def.Path}'`;
-  const bodyParams = (def.BodyParams.length) ? `this.pick(${J(def.BodyParams)},parameters);` : `null`;
-  const queryParams = (def.QueryParams.length) ? `this.pick(${J(def.QueryParams)},parameters);` : `null`;
+  const path = (def.PathParams.length) ? "`" + def.Path.replace(/{/, "${parameters.") + "`" : `'${def.Path}'`;
   const checkParams = (def.RequiredParams.length) ? `this.checkParams(${J(def.RequiredParams)},parameters)` : ``;
-  const method = def.Method.toUpperCase();
+  const bodyParams = (def.BodyParams.length) ? `this.pick(${J(def.BodyParams)},parameters)` : `undefined`;
+  const queryParams = (def.QueryParams.length) ? `this.pick(${J(def.QueryParams)},parameters)` : `undefined`;
+  const method = `'${def.Method.toUpperCase()}'`;
+  const response = `${def.OpId}Response`;
+  const opt = def.RequiredParams.length ? "" : "?";
 
-  return `${def.OpId}(parameters: { ${def.ParamsTyped} }): T<${def.OpId}Response> {
 
+
+
+  return `${def.OpId}(parameters${opt}: { ${def.ParamsTyped} }) {
   ${checkParams}
-  const path = ${path};
-  const bodyParams = ${bodyParams};
-  const queryParams = ${queryParams};
-  const method = '${method}';
-
-  return this.request({
-    path,
-    method,
-    bodyParams,
-    queryParams
+  return this.request<${response}>({
+    path: ${path},
+    method: ${method},
+    bodyParams: ${bodyParams},
+    queryParams: ${queryParams}
   })
-
 }`
 
 }
 
 function makeClass(def) {
+  return `export default class ${def.ClassName} { 
 
+    constructor(public apiKey?: string) {}
 
-  return `class ${def.ClassName}<T> { 
-
-    request(props){
-      return Promise.new(rs=>rs(props));
+    SetRequestMethod(fn: RequestFunction){
+      this.request = fn.bind(this) as RequestFunction;
     }
-    
-    pick(list: string[], params: { [key: string] : any}){
+
+    request: RequestFunction = (req) => {
+      if (!this.apiKey) {
+        throw new Error(
+          \`No api key, try #.SetToken(apiKey: string)\`
+        );
+      }
+      let R = request(req.method, req.path);
+      if (req.bodyParams) R = R.send(req.bodyParams);
+      if (req.queryParams) R = R.query(req.queryParams);
+      return R.set("x-api-key", this.apiKey).set("accept", "json");
+    }
+
+    SetToken(apiKey: string){
+      this.apiKey = apiKey;
+    }
+
+    private pick(list: string[], params?: { [key: string] : any}){
+      if (!params) return;
       return list.reduce((p, n) => ({ ...p,
         [n]: params[n]
       }), {});
     }
-    buildPath(path: string, params: { [key: string] : any }){
-      return path.split('/').map(seg => seg[0] === '{' ? params[seg.slice(1, -1)] : seg).join('/');
-    }
-    checkParams(list: string[], params: { [key: string ]: any }){
+
+    private checkParams(list: string[], params: { [key: string ]: any }){
       return list.forEach(p => {
         if (!(p in params)) {
           throw new Error('Missing parameter: ' + p)
         }
       }); 
     }
-
     ${def.Methods.map(m=>makeMethod(m)).join('\n\n')}
-
   }
   `
 }
+
+
+const SwagDef = swag(require('./build/src/paperspace-api.swagger2.json'), "PaperspaceApi");
+process.stdout.write(Global);
+process.stdout.write(SwagDef.Types.join("\n"));
+process.stdout.write(makeClass(SwagDef));
