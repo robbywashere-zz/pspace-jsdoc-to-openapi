@@ -1,0 +1,33 @@
+{
+  "name": "jsdoc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/superagent": "^3.8.4",
+    "api-spec-converter": "^2.7.18",
+    "doctrine": "^3.0.0",
+    "fixjson": "^1.1.0",
+    "generate-schema": "^2.6.0",
+    "js-yaml": "^3.12.0",
+    "json-schema-to-openapi-schema": "^0.2.0",
+    "json5-relaxed": "0.5.1",
+    "lodash": "^4.17.11",
+    "netrc-parser": "^3.1.6",
+    "shelljs": "^0.8.3",
+    "superagent": "^4.1.0",
+    "swagger-js-codegen": "^1.12.0",
+    "swagger-parser": "^6.0.2"
+  },
+  "scripts": {
+    "greppy": "node main.js && grep 'machineId' build/src/PaperspaceApi.ts",
+    "build": "node main.js"
+  },
+  "devDependencies": {
+    "@oclif/command": "^1.5.8",
+    "cli-ux": "^5.1.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0"
+  }
+}
