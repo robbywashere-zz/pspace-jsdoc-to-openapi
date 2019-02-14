@@ -7,8 +7,6 @@ import { makeCliCommand } from "./templates/cliCommand";
 import { writeFileSync } from "fs";
 const SwagDef = swag(require("./swagger2.json"), "Api");
 
-//mkdir('-p',)
-//rm('-rf', '/tmp/*');
 function Build() {
   const CLI_BUILD = join(__dirname, "cli-build");
   const CLI_PROTO = join(__dirname, "cli-prototype");
@@ -33,7 +31,4 @@ function Cmd(path: string) {
   }
 }
 
-//writeFileSync("")
-
-//console.log(makeCliCommand(SwagDef.Methods[0]));
-//process.stdout.write(Global);
+Build();

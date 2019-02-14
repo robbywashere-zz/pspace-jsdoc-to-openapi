@@ -4,6 +4,7 @@ node_modules
 .env
 .tmp
 build/
+cli-build/
 .nyc_output
 .nyc_output/
 *.pyc
