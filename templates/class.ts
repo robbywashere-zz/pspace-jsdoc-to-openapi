@@ -1,6 +1,7 @@
-import { makeMethod } from "./makeMethod";
+import { makeMethod } from "./method";
+import { SwagDef } from "../typeDef";
 
-function makeClass(def) {
+export function makeClass(def: SwagDef) {
   return `export default class ${def.ClassName} { 
 
     constructor(public apiKey?: string) {}
@@ -43,4 +44,3 @@ function makeClass(def) {
   }
   `;
 }
-exports.makeClass = makeClass;

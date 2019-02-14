@@ -1,7 +1,27 @@
-export function typify(spec, reqParams?: string[]) {
+export function locate<T extends "body" | "query" | "path">(where: T) {
+  return ({ in: location }: { in: string }) => location === where;
+}
+
+export function J(str: string[], ...keys: object[]): string {
+  return str
+    .reduce<string[]>((p, n, i) => [...p, n, JSON.stringify(keys[i])], [])
+    .join("");
+}
+
+export const collectNames = (list: { name: string }[]) =>
+  list.reduce((p, { name }) => [...p, name], [] as string[]);
+
+export const resolveRef = (node: { [key: string]: any }, ref: string = "") => {
+  for (let path of ref.split("/").slice(1)) {
+    node = node[path];
+  }
+  return node;
+};
+
+export function typify(spec: any, reqParams?: string[]) {
   return walk(null, spec, new Set(reqParams));
 
-  function walk(name, prop, req = new Set()) {
+  function walk(name: string | null, prop: any, req = new Set()) {
     const { name: propName, type, items, required = [], properties } = prop;
     const Enum = prop.enum;
     name = propName ? propName : name;
@@ -26,7 +46,9 @@ export function typify(spec, reqParams?: string[]) {
     } else {
       //assume string enum
       if (Enum)
-        return (declaration += Enum.map(val => '"' + val + '"').join("|"));
+        return (declaration += Enum.map((val: string) => '"' + val + '"').join(
+          "|"
+        ));
       return (declaration += type);
     }
     return declaration;

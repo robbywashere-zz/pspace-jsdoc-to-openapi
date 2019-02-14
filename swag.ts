@@ -1,47 +1,7 @@
-import { locate, collectNames } from "./newgen";
-import { resolveRef } from "./resolveRef";
-import { typify } from "./typify";
-
-export type SwagDef = {
-  Types: string[];
-  Methods: SwagDefMethod[];
-  ClassName: string;
-};
-
-export type SwagDefMethod = {
-  OpId: string;
-  AllParams: {}[];
-  CliParams: {}[];
-  BodyParams: string[];
-  PathParams: string[];
-  QueryParams: string[];
-  ParamsTyped: string;
-  RequiredParams: string[];
-  Method: string;
-  Path: string;
-};
-
-type SwaggerSpec = {
-  paths: {
-    [key: string]: {
-      [key: string]: {
-        "x-cli-parameters"?: {}[];
-        parameters: {
-          name: string;
-          in: "path" | "query" | "body";
-          schema: {
-            $ref?: string;
-          };
-          required: string[];
-        }[];
-        operationId: string;
-        responses: {
-          $ref?: string;
-        }[];
-      };
-    };
-  };
-};
+import { locate, collectNames, resolveRef } from "./lib";
+import { typify } from "./lib";
+import { SwagDef, SwagParam, SwaggerSpec } from "./typeDef";
+import { ok } from "assert";
 
 export function swag(spec: SwaggerSpec, ClassName = "Api") {
   let Def: SwagDef = {
@@ -71,23 +31,32 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
           }),
           Object.create(null)
         );
-      const queryParams = params.filter(locate("query"));
-      const pathParams = params.filter(locate("path"));
+      const queryParams = params
+        .filter(locate("query"))
+        .map(p => ({ ...p, required: true }));
+      const pathParams = params
+        .filter(locate("path"))
+        .map(p => ({ ...p, required: true }));
+      const requiredBodyParams: string[] = bodyParams.required || [];
       const AllParams = [
         ...queryParams,
         ...pathParams,
         ...Object.entries(bodyParams.properties || {}).map(([k, v]) => ({
           name: k,
+          required: requiredBodyParams.includes(k),
           ...v
         }))
-      ];
-      const requiredBodyParams = bodyParams.required || [];
+      ] as SwagParam[];
+      const OptionalParams = AllParams.filter(p => !p.required);
       const RequiredParams = [
         ...collectNames(pathParams),
         ...collectNames(queryParams.filter(p => p.required)),
         ...requiredBodyParams
       ];
-      const CliParams = spec.paths[Path][Method]["x-cli-parameters"] || [];
+      const CliParams = (spec.paths[Path][Method]["x-cli-parameters"] ||
+        []) as SwagParam[];
+
+      const Description = spec.paths[Path][Method].description || "";
       const QueryParams = collectNames(queryParams);
       const PathParams = collectNames(pathParams);
       const BodyParams = Object.keys(bodyParams.properties || {});
@@ -96,6 +65,7 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
       );
       Def.Methods.push({
         OpId,
+        Description,
         AllParams,
         CliParams,
         BodyParams,
