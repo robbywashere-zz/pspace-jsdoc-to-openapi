@@ -1,6 +1,4 @@
-const {
-  makeMethod
-} = require("./makeMethod");
+import { makeMethod } from "./makeMethod";
 
 function makeClass(def) {
   return `export default class ${def.ClassName} { 
