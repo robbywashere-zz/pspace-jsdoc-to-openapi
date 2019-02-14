@@ -2,7 +2,7 @@ export function locate<T extends "body" | "query" | "path">(where: T) {
   return ({ in: location }: { in: string }) => location === where;
 }
 
-export function J(str: string[], ...keys: object[]): string {
+export function J(str: TemplateStringsArray, ...keys: object[]): string {
   return str
     .reduce<string[]>((p, n, i) => [...p, n, JSON.stringify(keys[i])], [])
     .join("");

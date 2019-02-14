@@ -1,7 +1,6 @@
 import { locate, collectNames, resolveRef } from "./lib";
 import { typify } from "./lib";
 import { SwagDef, SwagParam, SwaggerSpec } from "./typeDef";
-import { ok } from "assert";
 
 export function swag(spec: SwaggerSpec, ClassName = "Api") {
   let Def: SwagDef = {
@@ -11,16 +10,19 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
   };
   for (let Path of Object.keys(spec.paths)) {
     for (let Method of Object.keys(spec.paths[Path])) {
-      const OpId = spec.paths[Path][Method].operationId;
-      const params = spec.paths[Path][Method].parameters;
-      const resp = ((Object.values(spec.paths[Path][Method].responses)[0] ||
-        {}) as any).schema;
+      const methodObj = spec.paths[Path][Method];
+      const OpId = methodObj.operationId;
+      const params = methodObj.parameters;
+      const resp = ((Object.values(methodObj.responses)[0] || {}) as any)
+        .schema;
       if (resp !== undefined) {
         Def.Types.push(
-          `type ${OpId}Response = ${typify(resolveRef(spec, resp["$ref"]))};`
+          `export type ${OpId}Response = ${typify(
+            resolveRef(spec, resp["$ref"])
+          )};`
         );
       } else {
-        Def.Types.push(`type ${OpId}Response = any;`);
+        Def.Types.push(`export type ${OpId}Response = any;`);
       }
       let bodyParams = params
         .filter(locate("body"))
@@ -47,7 +49,6 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
           ...v
         }))
       ] as SwagParam[];
-      const OptionalParams = AllParams.filter(p => !p.required);
       const RequiredParams = [
         ...collectNames(pathParams),
         ...collectNames(queryParams.filter(p => p.required)),
@@ -56,7 +57,7 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
       const CliParams = (spec.paths[Path][Method]["x-cli-parameters"] ||
         []) as SwagParam[];
 
-      const Description = spec.paths[Path][Method].description || "";
+      const Description = methodObj.summary || "";
       const QueryParams = collectNames(queryParams);
       const PathParams = collectNames(pathParams);
       const BodyParams = Object.keys(bodyParams.properties || {});

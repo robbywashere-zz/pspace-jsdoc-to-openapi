@@ -1,16 +1,6 @@
 import { SwagDefMethod } from "../typeDef";
-const { J } = require("./newgen");
-
-export function makeJsdoc(def: SwagDefMethod) {
-  return `/* ${def.Description} 
-     * @method
-     * @name ${def.OpId}
-     ${def.AllParams.map(
-       ({ name, type, description, required }) =>
-         `* @param {${type}} ${required ? `[${name}]` : name} - ${description}`
-     ).join("\n")}
-   */`;
-}
+import { J } from "../lib";
+import { makeJsdoc } from "./jsdoc";
 
 export function makeMethod(def: SwagDefMethod) {
   const path = def.PathParams.length

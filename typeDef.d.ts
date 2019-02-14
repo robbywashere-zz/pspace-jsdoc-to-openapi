@@ -38,7 +38,7 @@ export type SwaggerSpec = {
           };
           required: string[];
         }[];
-        description: string;
+        summary: string;
         operationId: string;
         responses: {
           $ref?: string;
