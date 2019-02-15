@@ -33,9 +33,7 @@ export function swag(spec: SwaggerSpec, ClassName = "Api") {
           }),
           Object.create(null)
         );
-      const queryParams = params
-        .filter(locate("query"))
-        .map(p => ({ ...p, required: true }));
+      const queryParams = params.filter(locate("query"));
       const pathParams = params
         .filter(locate("path"))
         .map(p => ({ ...p, required: true }));

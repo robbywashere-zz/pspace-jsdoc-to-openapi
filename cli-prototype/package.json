@@ -1,43 +1,33 @@
 {
-  "name": "kaomoji",
+  "name": "{cliName}",
   "version": "0.0.0",
-  "author": "robbywashere @robbywashere",
+  "author": "{authorInfo}",
   "bin": {
-    "kaomoji": "./bin/run"
+    "api-cli": "./bin/run"
   },
-  "bugs": "https://github.com/robbywashere/kaomoji/issues",
+  "bugs": "https://github.com/{ghUser}/api-cli/issues",
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "cli-ux": "^5.1.0",
+    "@oclif/dev-cli": "^1.21.0",
+    "@types/superagent": "^3.8.6",
+    "superagent": "^4.1.0",
+    "globby": "^9.0.0",
     "tslib": "^1"
   },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/test": "^1",
-    "@oclif/tslint": "^3",
-    "@types/chai": "^4",
-    "@types/mocha": "^5",
-    "@types/node": "^10",
-    "chai": "^4",
-    "globby": "^8",
-    "mocha": "^5",
-    "nyc": "^13",
-    "ts-node": "^7",
-    "tslint": "^5",
-    "typescript": "^3.2"
-  },
+  "devDependencies": {},
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.15.1"
   },
   "files": [
     "/bin",
     "/lib",
     "/npm-shrinkwrap.json",
+    "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/robbywashere/kaomoji",
+  "homepage": "https://github.com/{ghUser}/{cliName}",
   "keywords": [
     "oclif"
   ],
@@ -45,17 +35,16 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "kaomoji",
+    "bin": "api-cli",
     "plugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "robbywashere/kaomoji",
+  "repository": "{ghUser}/{cliName}",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"

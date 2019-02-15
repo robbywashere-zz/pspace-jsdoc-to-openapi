@@ -8,7 +8,7 @@ export function makeCliCommand(def: SwagDefMethod) {
       CombinedParams.push({
         ...param,
         type: "boolean",
-        hidden: !!param.required
+        hiddenPrompt: !!param.required
       });
       MaskedParams.push(param);
     } else {
@@ -21,7 +21,7 @@ export function makeCliCommand(def: SwagDefMethod) {
   const className = `${def.OpId}`;
   return `
   import {  flags } from "@oclif/command";
-  import { BaseCommand } from "../lib/BaseCommand";
+  import { BaseCommand } from "../BaseCommand";
 
   export default class ${className} extends BaseCommand {
     static flags = ${flags}

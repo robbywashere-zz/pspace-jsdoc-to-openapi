@@ -1,6 +1,30 @@
 export function locate<T extends "body" | "query" | "path">(where: T) {
   return ({ in: location }: { in: string }) => location === where;
 }
+export function ObjTmpl(
+  protoObj: {
+    [key: string]: any;
+  },
+  tmplValues: {
+    [key: string]: string;
+  }
+) {
+  return walk(JSON.parse(JSON.stringify(protoObj)));
+  function walk(obj: { [key: string]: any }) {
+    for (let [k, v] of Object.entries(obj)) {
+      if (typeof v === "string") {
+        obj[k] = Object.entries(tmplValues).reduce(
+          (p, [tmplKey, tmplValue]) =>
+            p.toString().replace(`{${tmplKey}}`, tmplValue),
+          v
+        );
+      } else {
+        walk(v);
+      }
+    }
+    return obj;
+  }
+}
 
 export function J(str: TemplateStringsArray, ...keys: object[]): string {
   return str
@@ -25,8 +49,7 @@ export function typify(spec: any, reqParams?: string[]) {
     const { name: propName, type, items, required = [], properties } = prop;
     const Enum = prop.enum;
     name = propName ? propName : name;
-    let R =
-      (typeof required === "boolean" && required) || req.has(name) ? "" : "?";
+    let R = required === true || req.has(name) ? "" : "?";
     let declaration = name ? `${name}${R}: ` : "";
     if (type === "array") {
       declaration += `Array<${walk(null, items)}>`;

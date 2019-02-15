@@ -3,7 +3,7 @@ export type SwagDef = {
   Methods: SwagDefMethod[];
   ClassName: string;
 };
-export type FlagParam = { hidden?: boolean } & SwagParam;
+export type FlagParam = { hiddenPrompt?: boolean } & SwagParam;
 export type SwagParam = {
   name: string;
   required?: boolean;

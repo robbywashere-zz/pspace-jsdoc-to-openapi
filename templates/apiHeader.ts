@@ -1,5 +1,6 @@
 export const apiHeader = `
-import request, { Response } from "superagent";
+import { Response } from "superagent";
+import * as request from "superagent";
 export interface ResponseWithBody<T> extends Response {
   body: T;
 }

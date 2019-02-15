@@ -41,6 +41,7 @@ export abstract class BaseCommand extends Command {
       required.filter(k => !flags[k])
     );
     for (let k of optional) delete flags[k];
-    return { ...(flags as Pick<T, Exclude<keyof T, Req | Opt>>), ...prompts };
+    return { ...flags, ...prompts } as Pick<T, Exclude<keyof T, Req | Opt>> &
+      typeof prompts;
   }
 }

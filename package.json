@@ -20,11 +20,11 @@
     "shelljs": "^0.8.3",
     "superagent": "^4.1.0",
     "swagger-js-codegen": "^1.12.0",
-    "swagger-parser": "^6.0.2"
+    "swagger-parser": "^6.0.2",
+    "yarn": "^1.13.0"
   },
   "scripts": {
-    "greppy": "node main.js && grep 'machineId' build/src/PaperspaceApi.ts",
-    "build": "node main.js"
+    "build": "ts-node main.ts && cd cli-build && yarn install && yarn prepack"
   },
   "devDependencies": {
     "@oclif/command": "^1.5.8",
